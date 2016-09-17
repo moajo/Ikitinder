@@ -1,8 +1,4 @@
-try {
-  require('dotenv').config();
-} catch (e) {
-  console.log(e);
-}
+require('dotenv').config();
 
 var TWITTER_CONSUMER_KEY = process.env.TWITTER_CONSUMER_KEY;
 var TWITTER_CONSUMER_SECRET = process.env.TWITTER_CONSUMER_SECRET;
