@@ -1,3 +1,4 @@
+var path = require('path')
 var express = require('express');
 var redis = require("redis");
 var app = express();
@@ -12,19 +13,11 @@ client.set(key, value, function () {
   console.log("set");
 });
 
-app.listen(process.env.Port || 8000, function () {
-  console.log("aaa");
+app.listen(process.env.PORT || 8000, function () {
+  console.log('Node app is running');
 });
 
 app.get("/", function (req, res) {
 
-
-  // 文字列を取得する
-  client.get(key, function (err, val) {
-    // コールバック
-    if (err) return console.log(err);
-    // エラーが無ければデータを取得できたということ
-    console.log(val);
-  });
-  res.send("hello node world!");
+  res.sendFile(path.join(__dirname + "/index.html"));
 });
