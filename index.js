@@ -3,7 +3,7 @@ require('dotenv').config();
 var path = require('path')
 var express = require('express');
 // var redis = require("redis");
-var session = require('express-session')
+var session = require('express-session');
 var auth = require('./passport');
 var pg = require('pg');
 
@@ -20,18 +20,20 @@ pgClient.connect(function (err) {
     pgData.push("success");
   });
 });
+app.set('views', './views')
+app.set('view engine', 'jade')
 
 
-app.use(passport.initialize()); 
-app.use(passport.session()); 
-app.use(session({secret: process.env.SECRET}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(session({ secret: process.env.SECRET }));
 
 app.listen(process.env.PORT || 8000, function () {
   console.log('Node app is running');
 });
-
-app.all("/", function (req, res) {
-  res.sendFile(path.join(__dirname + "/index.html"));
+app.get('/', function (req, res) {
+  res.render('index', { title: 'Hey', message: 'Hello there!' });
 });
 
 app.all("/places", function (req, res) {
@@ -48,14 +50,39 @@ app.all("/matches", function (req, res) {
 
 app.all("/places/:id/:code", function (req, res) {
   res.send(JSON.stringify({
-  	state: "ok",
+    state: "ok",
   }));
+});
+app.all("/places/:id/:type/:value", function (req, res) {
+  console.log(req.params);
+  var id = req.params.id;
+  var type = req.params.type;
+  var value = req.params.value;
+  var userId = passport.session.id;
+  if (type === "interest") {
+    pgClient.connect(function (err) {
+      if (err) return pgData.push(["could not connect to postgres", err]);
+      var query = 'INSERT INTO user_place(user_id,place_id,like) VALUES (' + userId + ',' + id + ',' + value + ')';
+      console.log(query);
+      pgClient.query(query, function (err, result) {
+        if (err) return pgData.push(["error running query", err]);
+        res.send(JSON.stringify({
+          state: "ok",
+        }));
+        pgData.push("success");
+      });
+    });
+  } else if (type === "match") {
+
+  }
+  // res.send(JSON.stringify({
+  //   state: "ok",
+  // }));
 });
 
 app.get('/auth/twitter', passport.authenticate('twitter'));
 app.get('/auth/twitter/callback', passport.authenticate(
-  'twitter',
-  { successRedirect: '/auth/test', failureRedirect: '/auth/test' }
+  'twitter', { successRedirect: '/auth/test', failureRedirect: '/auth/test' }
 ));
 
 
