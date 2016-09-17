@@ -2,14 +2,14 @@ require('dotenv').config();
 
 var path = require('path')
 var express = require('express');
-var redis = require("redis");
+// var redis = require("redis");
 var session = require('express-session')
 var auth = require('./passport');
 var pg = require('pg');
 
 var app = express();
 var passport = auth.passport;
-var redisClient = redis.createClient();
+// var redisClient = redis.createClient();
 var pgClient = new pg.Client(process.env.DATABASE_URL);
 var pgData = [];
 pgClient.connect(function (err) {
