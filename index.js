@@ -10,7 +10,7 @@ var pg = require('pg');
 var app = express();
 var passport = auth.passport;
 var redisClient = redis.createClient();
-var pgClient = new pg.Client("postgres://postgres:password@localhost:5432/test1");
+var pgClient = new pg.Client(process.env.DATABASE_URL);
 var pgData = [];
 pgClient.connect(function (err) {
   if (err) return pgData.push(["could not connect to postgres", err]);
