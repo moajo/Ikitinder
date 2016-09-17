@@ -16,13 +16,29 @@ app.listen(process.env.PORT || 8000, function () {
   console.log('Node app is running');
 });
 
-app.get("/", function (req, res) {
+app.all("/", function (req, res) {
   client.get(key, function (err, val) {
-    // コールバック
     if (err) return console.log(err);
-    // エラーが無ければデータを取得できたということ
     console.log(val);
   });
-
   res.sendFile(path.join(__dirname + "/index.html"));
 });
+
+app.all("/places", function (req, res) {
+  res.sendFile(path.join(__dirname + "/index.html"));
+});
+
+app.all("/suggestions", function (req, res) {
+  res.sendFile(path.join(__dirname + "/index.html"));
+});
+
+app.all("/matches", function (req, res) {
+  res.sendFile(path.join(__dirname + "/index.html"));
+});
+
+app.all("/places/:id/:code", function (req, res) {
+  console.log(req.params);
+  res.send(JSON.stringify({
+	state: "ok",
+  }));
+})
