@@ -1,4 +1,8 @@
-require('dotenv').config();
+try {
+  require('dotenv').config();
+} catch (e) {
+  console.log(e);
+}
 
 var path = require('path')
 var express = require('express');
