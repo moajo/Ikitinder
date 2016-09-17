@@ -33,19 +33,31 @@ app.listen(process.env.PORT || 8000, function () {
   console.log('Node app is running');
 });
 app.get('/', function (req, res) {
-  res.render('index', { title: 'Hey', message: 'Hello there!' });
+  res.render('index', { title: 'Hey', places: 'Hello there!' });
 });
 
 app.all("/places", function (req, res) {
-  res.sendFile(path.join(__dirname + "/index.html"));
+  var query = "SELECT * FROM place;";
+  pgClient.query(query, function (err, result) {
+    if (err) console.log(err);
+    res.render('places', { places: JSON.stringify(result.rows) });
+  });
 });
 
 app.all("/suggestions", function (req, res) {
-  res.sendFile(path.join(__dirname + "/index.html"));
+  var query = "SELECT * FROM place;";
+  pgClient.query(query, function (err, result) {
+    if (err) console.log(err);
+    res.render('suggestions', { places: JSON.stringify(result.rows) });
+  });
 });
 
 app.all("/matches", function (req, res) {
-  res.sendFile(path.join(__dirname + "/index.html"));
+  var query = "SELECT * FROM place;";
+  pgClient.query(query, function (err, result) {
+    if (err) console.log(err);
+    res.render('matches', { places: JSON.stringify(result.rows) });
+  });
 });
 
 app.all("/places/:id/:code", function (req, res) {
