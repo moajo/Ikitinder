@@ -70,26 +70,21 @@ app.all("/places/:id/:type/:value", function (req, res) {
   var id = req.params.id;
   var type = req.params.type;
   var value = req.params.value;
-  var userId = passport.session.id;
+  var userId = passport.session.id || 11;
+  var query;
   if (type === "interest") {
-    pgClient.connect(function (err) {
-      if (err) return pgData.push(["could not connect to postgres", err]);
-      var query = 'INSERT INTO user_place(user_id,place_id,like) VALUES (' + userId + ',' + id + ',' + value + ')';
-      console.log(query);
-      pgClient.query(query, function (err, result) {
-        if (err) return pgData.push(["error running query", err]);
-        res.send(JSON.stringify({
-          state: "ok",
-        }));
-        pgData.push("success");
-      });
-    });
+    console.log("interrest");
+    query = 'INSERT INTO "user_place"(user_id,place_id,interest) VALUES (' + userId + ',' + id + ',' + value + ')';
   } else if (type === "match") {
-
+    query = "UPDATE user_place SET match = :match WHERE id = :id".replace(":match", value).replace(":id", id);
   }
-  // res.send(JSON.stringify({
-  //   state: "ok",
-  // }));
+  console.log(query);
+  pgClient.query(query, function (err, result) {
+    if (err) return console.log("error running query", err);
+    res.send(JSON.stringify({
+      state: "ok",
+    }));
+  });
 });
 
 app.get('/auth/twitter', passport.authenticate('twitter'));
